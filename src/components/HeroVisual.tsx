@@ -58,21 +58,50 @@ function GlassScene({ mouseX, mouseY }: { mouseX: MouseMV; mouseY: MouseMV }) {
       </mesh>
       <mesh geometry={glassGeo} castShadow>
         <meshPhysicalMaterial
-          color="#ffffff" metalness={0} roughness={0.03} transmission={0.92}
-          thickness={0.65} ior={1.5} envMapIntensity={1.1} clearcoat={1}
-          clearcoatRoughness={0.03} transparent opacity={1} side={THREE.DoubleSide} depthWrite={false}
+          color="#ffffff"
+          metalness={0}
+          roughness={0.03}
+          transmission={0.92}
+          thickness={0.65}
+          ior={1.5}
+          envMapIntensity={1.1}
+          clearcoat={1}
+          clearcoatRoughness={0.03}
+          transparent
+          opacity={1}
+          side={THREE.DoubleSide}
+          depthWrite={false}
         />
       </mesh>
       <mesh geometry={liquidGeo}>
         <meshPhysicalMaterial
-          color="#5C1A28" metalness={0.05} roughness={0.06} transmission={0.18}
-          thickness={0.85} ior={1.35} attenuationColor="#3A0E16" attenuationDistance={0.45}
-          envMapIntensity={0.6} emissive="#4A1520" emissiveIntensity={0.1} transparent opacity={0.95}
+          color="#5C1A28"
+          metalness={0.05}
+          roughness={0.06}
+          transmission={0.18}
+          thickness={0.85}
+          ior={1.35}
+          attenuationColor="#3A0E16"
+          attenuationDistance={0.45}
+          envMapIntensity={0.6}
+          emissive="#4A1520"
+          emissiveIntensity={0.1}
+          transparent
+          opacity={0.95}
         />
       </mesh>
       <mesh position={[0, 1.23, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[0.21, 32]} />
-        <meshPhysicalMaterial color="#6E2434" metalness={0.1} roughness={0.04} transmission={0.25} thickness={0.2} side={THREE.DoubleSide} transparent opacity={0.9} />
+        <meshPhysicalMaterial
+          color="#6E2434"
+          metalness={0.1}
+          roughness={0.04}
+          transmission={0.25}
+          thickness={0.2}
+          side={THREE.DoubleSide}
+          transparent
+          opacity={0.9}
+        />
       </mesh>
     </group>
   )
@@ -99,13 +128,13 @@ function SceneContent({ mouseX, mouseY }: { mouseX: MouseMV; mouseY: MouseMV }) 
         <GlassScene mouseX={mouseX} mouseY={mouseY} />
       </Float>
       <ContactShadows position={[0, -0.66, 0]} opacity={0.4} scale={5.5} blur={2.4} far={3.5} />
-      <Environment preset="studio" environmentIntensity={0.48} />
+      <Environment preset="studio" />
       <CameraRig mouseX={mouseX} mouseY={mouseY} />
     </>
   )
 }
 
-function FallbackUI({ message = '3D loading…' }: { message?: string }) {
+function FallbackUI({ message = '3D loading...' }: { message?: string }) {
   return (
     <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-[#F7F5F0] to-[#EAE7E0]/50">
       <div className="text-center px-6">
@@ -120,7 +149,9 @@ function FallbackUI({ message = '3D loading…' }: { message?: string }) {
 
 class HeroErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false }
-  static getDerivedStateFromError() { return { hasError: true } }
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
   render() {
     if (this.state.hasError) return <FallbackUI message="3D unavailable on this device" />
     return this.props.children
@@ -141,7 +172,10 @@ export default function HeroVisual() {
         mouseX.set((e.clientX - rect.left) / rect.width - 0.5)
         mouseY.set((e.clientY - rect.top) / rect.height - 0.5)
       }}
-      onPointerLeave={() => { mouseX.set(0); mouseY.set(0) }}
+      onPointerLeave={() => {
+        mouseX.set(0)
+        mouseY.set(0)
+      }}
     >
       <HeroErrorBoundary>
         <Suspense fallback={<FallbackUI />}>
@@ -149,8 +183,12 @@ export default function HeroVisual() {
             shadows
             dpr={[1, 1.5]}
             camera={{ position: [0, 0.28, 3.2], fov: 35, near: 0.1, far: 40 }}
-            gl={{ antialias: true, alpha: true, powerPreference: 'high-performance', toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
-            onCreated={({ gl }) => { gl.setClearColor(0x000000, 0) }}
+            gl={{ antialias: true, alpha: true }}
+            onCreated={({ gl }) => {
+              gl.setClearColor(0x000000, 0)
+              gl.toneMapping = THREE.ACESFilmicToneMapping
+              gl.toneMappingExposure = 1.05
+            }}
             style={{ background: 'transparent' }}
           >
             <SceneContent mouseX={springX} mouseY={springY} />
